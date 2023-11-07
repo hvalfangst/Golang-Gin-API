@@ -11,6 +11,8 @@ import (
 
 func CreateDB(config configuration.Db) (*bun.DB, error) {
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(config.DataSourceName)))
+	sqldb.SetMaxIdleConns(config.MaxIdleConns)
+	sqldb.SetMaxOpenConns(config.MaxOpenConns)
 	db := bun.NewDB(sqldb, pgdialect.New())
 	return db, nil
 }

@@ -1,5 +1,7 @@
 {
   "db": {
-    "data_source_name": "postgresql://MP77:IDecreeAndDeclareWarOnShitePerformance@localhost:5434/cars_db?sslmode=disable"
+    "data_source_name": "postgresql://MP77:IDecreeAndDeclareWarOnShitePerformance@localhost:5434/cars_db?sslmode=disable",
+    "max_idle_conns": 1,
+    "max_open_conns": 50
   }
 }
