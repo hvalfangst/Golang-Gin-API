@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/model"
-	CarRepository "hvalfangst/imperative-golang-gin-api/src/repository/car"
-	EngineRepository "hvalfangst/imperative-golang-gin-api/src/repository/engine"
-	InsuranceRepository "hvalfangst/imperative-golang-gin-api/src/repository/insurance"
-	OwnerRepository "hvalfangst/imperative-golang-gin-api/src/repository/owner"
-	RepairRepository "hvalfangst/imperative-golang-gin-api/src/repository/repair"
-	TireRepository "hvalfangst/imperative-golang-gin-api/src/repository/tire"
+	"github.com/uptrace/bun"
+	"hvalfangst/golang-gin-api-with-bun/src/model"
+	CarRepository "hvalfangst/golang-gin-api-with-bun/src/repository/car"
+	EngineRepository "hvalfangst/golang-gin-api-with-bun/src/repository/engine"
+	InsuranceRepository "hvalfangst/golang-gin-api-with-bun/src/repository/insurance"
+	OwnerRepository "hvalfangst/golang-gin-api-with-bun/src/repository/owner"
+	RepairRepository "hvalfangst/golang-gin-api-with-bun/src/repository/repair"
+	TireRepository "hvalfangst/golang-gin-api-with-bun/src/repository/tire"
 )
 
-func GetCarDetails(db *pg.DB, carID int64) (*model.CarDetails, error) {
+func GetCarDetails(db *bun.DB, carID int64) (*model.CarDetails, error) {
 	car, err := CarRepository.GetCarByID(db, carID)
 	if err != nil {
 		return nil, err

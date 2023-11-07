@@ -2,12 +2,12 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-pg/pg/v10"
-	CarDetailsService "hvalfangst/imperative-golang-gin-api/src/service"
+	"github.com/uptrace/bun"
+	CarDetailsService "hvalfangst/golang-gin-api-with-bun/src/service"
 	"strconv"
 )
 
-func GetCarDetails(db *pg.DB) gin.HandlerFunc {
+func GetCarDetails(db *bun.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)

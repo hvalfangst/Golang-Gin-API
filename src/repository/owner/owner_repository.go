@@ -1,13 +1,14 @@
 package owner
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/model" // Import the model package with the correct path
+	"context"
+	"github.com/uptrace/bun"
+	"hvalfangst/golang-gin-api-with-bun/src/model"
 	"log"
 )
 
-func CreateOwner(db *pg.DB, owner *model.Owner) error {
-	_, err := db.Model(owner).Insert()
+func CreateOwner(db *bun.DB, owner *model.Owner) error {
+	_, err := db.NewInsert().Model(owner).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error creating owner: %v", err)
 		return err
@@ -15,9 +16,9 @@ func CreateOwner(db *pg.DB, owner *model.Owner) error {
 	return nil
 }
 
-func GetOwnerByID(db *pg.DB, ownerID int64) (*model.Owner, error) {
-	owner := &model.Owner{}
-	err := db.Model(owner).Where("id = ?", ownerID).Select()
+func GetOwnerByID(db *bun.DB, ownerID int64) (*model.Owner, error) {
+	owner := new(model.Owner)
+	err := db.NewSelect().Model(owner).Where("id = ?", ownerID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving owner by ID: %v", err)
 		return nil, err
@@ -25,8 +26,8 @@ func GetOwnerByID(db *pg.DB, ownerID int64) (*model.Owner, error) {
 	return owner, nil
 }
 
-func UpdateOwner(db *pg.DB, ownerID int64, owner *model.Owner) error {
-	_, err := db.Model(owner).Where("id = ?", ownerID).Update()
+func UpdateOwner(db *bun.DB, ownerID int64, owner *model.Owner) error {
+	_, err := db.NewUpdate().Model(owner).Where("id = ?", ownerID).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error updating owner: %v", err)
 		return err
@@ -34,10 +35,8 @@ func UpdateOwner(db *pg.DB, ownerID int64, owner *model.Owner) error {
 	return nil
 }
 
-func DeleteOwnerByID(db *pg.DB, ownerID int64) error {
-	owner := &model.Owner{ID: ownerID}
-
-	_, err := db.Model(owner).WherePK().Delete()
+func DeleteOwnerByID(db *bun.DB, ownerID int64) error {
+	_, err := db.NewDelete().Model(&model.Owner{ID: ownerID}).WherePK().Exec(context.Background())
 	if err != nil {
 		log.Printf("Error deleting owner by ID: %v", err)
 		return err

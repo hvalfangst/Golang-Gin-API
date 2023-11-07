@@ -2,33 +2,30 @@ package configuration
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
 )
 
-// Configuration represents the JSON structure.
 type Configuration struct {
-	Db  Db  `json:"db"`
-	Jwt Jwt `json:"jwt"`
+	Db Db `json:"db"`
 }
 
 type Db struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Address  string `json:"address"`
-	Database string `json:"database"`
+	DataSourceName string `json:"data_source_name"`
 }
 
-type Jwt struct {
-	EncryptionKey string `json:"encryption_key"`
-}
+func Get() (interface{}, error) {
 
-func Get(key string) (interface{}, error) {
 	file, err := os.Open("src/configuration.json")
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	var config Configuration
 	decoder := json.NewDecoder(file)
@@ -37,13 +34,5 @@ func Get(key string) (interface{}, error) {
 		return nil, err
 	}
 
-	// Determine which key to access and return the corresponding value
-	switch key {
-	case "db":
-		return config.Db, nil
-	case "jwt":
-		return config.Jwt, nil
-	default:
-		return nil, errors.New("invalid key")
-	}
+	return config.Db, nil
 }

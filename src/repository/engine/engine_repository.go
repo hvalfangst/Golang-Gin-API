@@ -1,13 +1,14 @@
 package engine
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/model"
+	"context"
+	"github.com/uptrace/bun"
+	"hvalfangst/golang-gin-api-with-bun/src/model"
 	"log"
 )
 
-func CreateEngine(db *pg.DB, engine *model.Engine) error {
-	_, err := db.Model(engine).Insert()
+func CreateEngine(db *bun.DB, engine *model.Engine) error {
+	_, err := db.NewInsert().Model(engine).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error creating engine: %v", err)
 		return err
@@ -15,9 +16,9 @@ func CreateEngine(db *pg.DB, engine *model.Engine) error {
 	return nil
 }
 
-func GetEngineByID(db *pg.DB, engineID int64) (*model.Engine, error) {
-	engine := &model.Engine{}
-	err := db.Model(engine).Where("id = ?", engineID).Select()
+func GetEngineByID(db *bun.DB, engineID int64) (*model.Engine, error) {
+	engine := new(model.Engine)
+	err := db.NewSelect().Model(engine).Where("id = ?", engineID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving engine by ID: %v", err)
 		return nil, err
@@ -25,8 +26,8 @@ func GetEngineByID(db *pg.DB, engineID int64) (*model.Engine, error) {
 	return engine, nil
 }
 
-func UpdateEngine(db *pg.DB, engineID int64, engine *model.Engine) error {
-	_, err := db.Model(engine).Where("id = ?", engineID).Update()
+func UpdateEngine(db *bun.DB, engineID int64, engine *model.Engine) error {
+	_, err := db.NewUpdate().Model(engine).Where("id = ?", engineID).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error updating engine: %v", err)
 		return err
@@ -34,10 +35,8 @@ func UpdateEngine(db *pg.DB, engineID int64, engine *model.Engine) error {
 	return nil
 }
 
-func DeleteEngineByID(db *pg.DB, engineID int64) error {
-	engine := &model.Engine{ID: engineID}
-
-	_, err := db.Model(engine).WherePK().Delete()
+func DeleteEngineByID(db *bun.DB, engineID int64) error {
+	_, err := db.NewDelete().Model(&model.Engine{ID: engineID}).WherePK().Exec(context.Background())
 	if err != nil {
 		log.Printf("Error deleting engine by ID: %v", err)
 		return err
@@ -45,9 +44,9 @@ func DeleteEngineByID(db *pg.DB, engineID int64) error {
 	return nil
 }
 
-func GetEngineByCarID(db *pg.DB, carID int64) (*model.Engine, error) {
-	engine := &model.Engine{}
-	err := db.Model(engine).Where("car_id = ?", carID).Select()
+func GetEngineByCarID(db *bun.DB, carID int64) (*model.Engine, error) {
+	engine := new(model.Engine)
+	err := db.NewSelect().Model(engine).Where("car_id = ?", carID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving engines by car ID: %v", err)
 		return nil, err

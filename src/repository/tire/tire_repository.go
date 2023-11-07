@@ -1,13 +1,14 @@
 package tire
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/model" // Import the model package with the correct path
+	"context"
+	"github.com/uptrace/bun"
+	"hvalfangst/golang-gin-api-with-bun/src/model"
 	"log"
 )
 
-func CreateTire(db *pg.DB, tire *model.Tire) error {
-	_, err := db.Model(tire).Insert()
+func CreateTire(db *bun.DB, tire *model.Tire) error {
+	_, err := db.NewInsert().Model(tire).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error creating tire: %v", err)
 		return err
@@ -15,9 +16,9 @@ func CreateTire(db *pg.DB, tire *model.Tire) error {
 	return nil
 }
 
-func GetTireByID(db *pg.DB, tireID int64) (*model.Tire, error) {
-	tire := &model.Tire{}
-	err := db.Model(tire).Where("id = ?", tireID).Select()
+func GetTireByID(db *bun.DB, tireID int64) (*model.Tire, error) {
+	tire := new(model.Tire)
+	err := db.NewSelect().Model(tire).Where("id = ?", tireID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving tire by ID: %v", err)
 		return nil, err
@@ -25,8 +26,8 @@ func GetTireByID(db *pg.DB, tireID int64) (*model.Tire, error) {
 	return tire, nil
 }
 
-func UpdateTire(db *pg.DB, tireID int64, tire *model.Tire) error {
-	_, err := db.Model(tire).Where("id = ?", tireID).Update()
+func UpdateTire(db *bun.DB, tireID int64, tire *model.Tire) error {
+	_, err := db.NewUpdate().Model(tire).Where("id = ?", tireID).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error updating tire: %v", err)
 		return err
@@ -34,10 +35,8 @@ func UpdateTire(db *pg.DB, tireID int64, tire *model.Tire) error {
 	return nil
 }
 
-func DeleteTireByID(db *pg.DB, tireID int64) error {
-	tire := &model.Tire{ID: tireID}
-
-	_, err := db.Model(tire).WherePK().Delete()
+func DeleteTireByID(db *bun.DB, tireID int64) error {
+	_, err := db.NewDelete().Model(&model.Tire{ID: tireID}).WherePK().Exec(context.Background())
 	if err != nil {
 		log.Printf("Error deleting tire by ID: %v", err)
 		return err
@@ -45,9 +44,9 @@ func DeleteTireByID(db *pg.DB, tireID int64) error {
 	return nil
 }
 
-func GetTiresByCarID(db *pg.DB, carID int64) ([]*model.Tire, error) {
+func GetTiresByCarID(db *bun.DB, carID int64) ([]*model.Tire, error) {
 	var tires []*model.Tire
-	err := db.Model(&tires).Where("car_id = ?", carID).Select()
+	err := db.NewSelect().Model(&tires).Where("car_id = ?", carID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving tires by car ID: %v", err)
 		return nil, err

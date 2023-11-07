@@ -1,28 +1,16 @@
 package db
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/configuration"
-	"log"
+	"database/sql"
+	_ "fmt"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
+	"hvalfangst/golang-gin-api-with-bun/src/configuration"
 )
 
-func ConnectDatabase(config configuration.Db) *pg.DB {
-	opts := &pg.Options{
-		User:     config.User,
-		Password: config.Password,
-		Addr:     config.Address,
-		Database: config.Database,
-	}
-	return pg.Connect(opts)
-}
-
-func CloseDatabase(db *pg.DB) {
-	if db == nil {
-		return
-	}
-
-	err := db.Close()
-	if err != nil {
-		log.Printf("Error closing database connection: %v", err)
-	}
+func CreateDB(config configuration.Db) (*bun.DB, error) {
+	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(config.DataSourceName)))
+	db := bun.NewDB(sqldb, pgdialect.New())
+	return db, nil
 }

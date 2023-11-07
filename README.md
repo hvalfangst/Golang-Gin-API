@@ -1,4 +1,4 @@
-# Imperative Golang Gin API
+# Golang Gin API with Bun ORM
 
 
 
@@ -29,3 +29,5 @@ The script "down" removed our DB container:
 ## Postman Collection
 
 The repository includes a Postman collection in the 'postman' directory.
+
+

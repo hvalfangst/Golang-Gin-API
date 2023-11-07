@@ -1,13 +1,14 @@
 package insurance
 
 import (
-	"github.com/go-pg/pg/v10"
-	"hvalfangst/imperative-golang-gin-api/src/model"
+	"context"
+	"github.com/uptrace/bun"
+	"hvalfangst/golang-gin-api-with-bun/src/model"
 	"log"
 )
 
-func CreateInsurance(db *pg.DB, insurance *model.Insurance) error {
-	_, err := db.Model(insurance).Insert()
+func CreateInsurance(db *bun.DB, insurance *model.Insurance) error {
+	_, err := db.NewInsert().Model(insurance).Exec(context.Background())
 	if err != nil {
 		log.Printf("Error creating insurance: %v", err)
 		return err
@@ -15,9 +16,9 @@ func CreateInsurance(db *pg.DB, insurance *model.Insurance) error {
 	return nil
 }
 
-func GetInsuranceByID(db *pg.DB, insuranceID int64) (*model.Insurance, error) {
-	insurance := &model.Insurance{}
-	err := db.Model(insurance).Where("id = ?", insuranceID).Select()
+func GetInsuranceByID(db *bun.DB, insuranceID int64) (*model.Insurance, error) {
+	insurance := new(model.Insurance)
+	err := db.NewSelect().Model(insurance).Where("id = ?", insuranceID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving insurance by ID: %v", err)
 		return nil, err
@@ -25,9 +26,9 @@ func GetInsuranceByID(db *pg.DB, insuranceID int64) (*model.Insurance, error) {
 	return insurance, nil
 }
 
-func GetInsurancesByCarID(db *pg.DB, carID int64) ([]*model.Insurance, error) {
+func GetInsurancesByCarID(db *bun.DB, carID int64) ([]*model.Insurance, error) {
 	var insurances []*model.Insurance
-	err := db.Model(&insurances).Where("car_id = ?", carID).Select()
+	err := db.NewSelect().Model(&insurances).Where("car_id = ?", carID).Scan(context.Background())
 	if err != nil {
 		log.Printf("Error retrieving insurances by car ID: %v", err)
 		return nil, err
