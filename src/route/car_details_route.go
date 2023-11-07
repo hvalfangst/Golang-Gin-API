@@ -8,4 +8,5 @@ import (
 
 func ConfigureRoute(r *gin.Engine, db *bun.DB) {
 	r.GET("/car-details/:id", CarDetailsHandler.GetCarDetails(db))
+	r.GET("/cars/:id", CarDetailsHandler.GetCarById(db))
 }

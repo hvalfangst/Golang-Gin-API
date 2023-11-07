@@ -25,3 +25,22 @@ func GetCarDetails(db *bun.DB) gin.HandlerFunc {
 		c.JSON(200, gin.H{"car_details": carDetails})
 	}
 }
+
+func GetCarById(db *bun.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(400, gin.H{"error": "Invalid Car ID"})
+			return
+		}
+
+		// Query user by email
+		car, err := CarDetailsService.GetCarById(db, id)
+		if err != nil {
+			c.JSON(404, gin.H{"error": "CarDetails doesn't exist"})
+			return
+		}
+		c.JSON(200, gin.H{"car": car})
+	}
+}

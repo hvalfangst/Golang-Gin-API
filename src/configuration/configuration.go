@@ -11,6 +11,8 @@ type Configuration struct {
 
 type Db struct {
 	DataSourceName string `json:"data_source_name"`
+	MaxIdleConns   int    `json:"max_idle_conns"`
+	MaxOpenConns   int    `json:"max_open_conns"`
 }
 
 func Get() (interface{}, error) {

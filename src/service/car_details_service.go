@@ -11,6 +11,14 @@ import (
 	TireRepository "hvalfangst/golang-gin-api-with-bun/src/repository/tire"
 )
 
+func GetCarById(db *bun.DB, ID int64) (*model.Car, error) {
+	car, err := CarRepository.GetCarByID(db, ID)
+	if err != nil {
+		return nil, err
+	}
+	return car, nil
+}
+
 func GetCarDetails(db *bun.DB, carID int64) (*model.CarDetails, error) {
 	car, err := CarRepository.GetCarByID(db, carID)
 	if err != nil {
